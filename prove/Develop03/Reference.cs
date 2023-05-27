@@ -31,7 +31,7 @@ class Reference{
         }
         catch{
             //if the reference is not valid then it will display the following and will be listen as not valid
-            Console.WriteLine($"'{reference}' is not a vaild reference");
+            Console.WriteLine($"'{reference}' is not a vaild reference, valid format is 1 Nephi 1:1-2");
             _isValidReference = false;      
         }
     }
