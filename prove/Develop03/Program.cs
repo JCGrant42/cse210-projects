@@ -8,7 +8,7 @@ class Program
         //Creates a Libary using a json file and the Libary class 
         string fileName = "BookofMormon.json";
         string jsonString = File.ReadAllText(fileName);
-        Library library = JsonSerializer.Deserialize<Library>(jsonString);
+        Library BoMLibrary = JsonSerializer.Deserialize<Library>(jsonString);
 
         bool isHidden = false;
         string userinput = "";
@@ -19,7 +19,7 @@ class Program
             //Gets a reference string from the user
             Console.Write("Please enter a scripture reference, or type 'quit' to quit: ");
             userinput = Console.ReadLine();
-            Reference reference = new Reference(userinput, library);
+            Reference reference = new Reference(userinput, BoMLibrary);
 
             //The Program will only continue to run if the user gave a valid reference, program would crash other wise
             //If the reference is not valid it will loop back and ask the user for the reference again
@@ -27,7 +27,7 @@ class Program
                 Console.Clear();
 
                 //creates the scripture class by using the reference given to find the scripture's text inside the libary.
-                Scripture script = new Scripture(reference, library);
+                Scripture script = new Scripture(reference, BoMLibrary);
                 script.DisplayScripture();
                 
                 //Loop will continue to run until the user types "back" or "quit" or until all words are hidden
