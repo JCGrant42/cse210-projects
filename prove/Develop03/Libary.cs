@@ -1,6 +1,6 @@
 public class Library
 {
-    public List<Book> books { get; set; }
+    public List<Book> _books { get; set; }
     //public string last_modified { get; set; }
     //public string lds_slug { get; set; }
     //public string subtitle { get; set; }
@@ -12,27 +12,27 @@ public class Library
 
 public class Book
 {
-    public string book { get; set; }
-    public List<Chapter> chapters { get; set; }
-    public string full_title { get; set; }
-    public string heading { get; set; }
-    public string lds_slug { get; set; }
-    public string full_subtitle { get; set; }
+    public string _book { get; set; }
+    public List<Chapter> _chapters { get; set; }
+    public string _full_title { get; set; }
+    public string _heading { get; set; }
+    public string _lds_slug { get; set; }
+    public string _full_subtitle { get; set; }
 }
 
 public class Chapter
 {
-    public int chapter { get; set; }
-    public string reference { get; set; }
-    public List<Verse> verses { get; set; }
-    public string heading { get; set; }
+    public int _chapter { get; set; }
+    public string _reference { get; set; }
+    public List<Verse> _verses { get; set; }
+    public string _heading { get; set; }
 }
 
 public class Verse
 {
-    public string reference { get; set; }
-    public string text { get; set; }
-    public int verse { get; set; }
+    public string _reference { get; set; }
+    public string _text { get; set; }
+    public int _verse { get; set; }
 }
 
 // public class Testimony

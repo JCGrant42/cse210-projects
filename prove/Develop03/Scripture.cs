@@ -31,12 +31,12 @@ class Scripture{
         if (reference.GetHasLastVerse()){
             //If multiple, it iterates through each verse until it gets to the last verse
             for (int verse = firstIndex; verse <= lastIndex; verse++){
-                text += $" {library.books[bookIndex].chapters[chapIndex].verses[verse].text} \n";
+                text += $" {library._books[bookIndex]._chapters[chapIndex]._verses[verse]._text} \n";
             }
         } 
         else{
             //If single, is simply saves the text 
-            text = $" {library.books[bookIndex].chapters[chapIndex].verses[firstIndex].text}";
+            text = $" {library._books[bookIndex]._chapters[chapIndex]._verses[firstIndex]._text}";
         }
         return text;
     }
