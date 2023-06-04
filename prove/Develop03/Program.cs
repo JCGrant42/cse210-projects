@@ -4,7 +4,7 @@ class Program
     static void Main(string[] args)
     {
         Console.Clear();
-        
+    
         //Creates a Libary using a json file and the Libary class 
         string fileName = "BookofMormon.json";
         string jsonString = File.ReadAllText(fileName);
