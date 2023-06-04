@@ -33,72 +33,72 @@ class Program
                 //Loop will continue to run until the user types "back" or "quit" or until all words are hidden
                 bool isHidingMode = true;
                 while (userinput.ToLower() != "quit" && userinput.ToLower() != "back" && !isHidden) {
-                    Console.Clear();
 
                     //This loop is for Hiding Mode
                     while (isHidingMode && !isHidden){
-                        script.DisplayScripture();
 
                         Console.Write("\n\nPress enter to remove words, type 'Switch' to switch to revealing words, Type 'back' to select different scripture, or type 'quit' to quit: ");
                         userinput = "";
                         userinput = Console.ReadLine();
+                        //Clears the screen before making the changes.
+                        Console.Clear();
 
                         //If the user presses enter it will hide a few random words and display the scripture
                         if (userinput == ""){
-                            //When all words are hidden this set isHidden to flase so the program will end
+                            script.HideRandomWords();
+                            //When all words are hidden this function set isHidden to false so that the program will end
                             isHidden = script.IsHidden();
-                            Console.Clear();
+                            
                         }
 
                         //If the user types "all" all word will be hidden (this does end the program but the user will have to press enter one more time for it to end)
                         else if (userinput.ToLower() == "all"){
                             script.HideAll();
-                            Console.Clear();
                         }
 
                         //Changes modes
                         else if (userinput.ToLower() == "switch"){
                             isHidingMode = false;
-                            Console.Clear();
+                            script.DisplayScripture();
                             break;
                         }
 
                         //Breaks the loop, if the user types "back" it will go back to reference selection, 
                         //if the user type "quits" program will end
                         else if (userinput.ToLower() != "quit" || userinput.ToLower() != "back"){
-                            Console.Clear();
                             break;
                         }
+                        //Displays the scripture after making the changes
+                        script.DisplayScripture();
                     }
 
                     //This loop is for Revealing Mode, SAME CODE AS ABOVE but reveals instead of hides
                     while (!isHidingMode){
-                        script.DisplayScripture();
 
                         Console.Write("\n\nPress enter to reveal words, type 'Switch' to switch to hiding words, Type 'back' to select different scripture, or type 'quit' to quit: ");
                         userinput = "";
                         userinput = Console.ReadLine();
+                        Console.Clear();
 
                         if (userinput == ""){
                             script.RevealWord();
-                            Console.Clear();
                         }
 
                         else if (userinput.ToLower() == "all"){
                             script.RevealAll();
-                            Console.Clear();
                         }
 
                         else if (userinput.ToLower() == "switch"){
+                            script.DisplayScripture();
                             isHidingMode = true;
-                            Console.Clear();
                             break;
                         }
 
                         else if (userinput.ToLower() != "quit" || userinput.ToLower() != "back"){
-                            Console.Clear();
                             break;
                         }
+                        script.DisplayScripture();
+
                     }
                 }
             }

@@ -24,7 +24,7 @@ class Reference{
             }
             //if there are multiple verses then it iterates through each one
             for (int verse = _firstVerse - 1; verse <= _lastVerse - 1; verse++){
-                string test = library._books[_bookIndex]._chapters[_chapter - 1]._verses[verse]._text;
+                string test = library.books[_bookIndex].chapters[_chapter - 1].verses[verse].text;
             }
             //If the reference is valid the will will be listed as valid
             _isValidReference = true;
@@ -74,8 +74,8 @@ class Reference{
     private int FindBookIndex(){
         //searches through the libary for the first instance of a book, the book is "1 Nephi" then it will be 0, if "Alma" then 8
         int index = 0;
-        foreach (Book testbook in _library._books){
-            if (testbook._book == _book)
+        foreach (Book testbook in _library.books){
+            if (testbook.book == _book)
             {
                 break;
             }
