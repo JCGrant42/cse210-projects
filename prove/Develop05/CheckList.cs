@@ -12,9 +12,6 @@ class CheckList : Goal{
     _bonusPoints = bonusPoints;
     _currentCount = currentCount;
     _deadlineDays = deadline;
-    if (_reminderFrequency == 0){
-        _reminderFrequency = deadline;
-    }
     TimeSpan timeSpan = new TimeSpan(deadline, 0, 0, 0);
     _deadlineDate = _createdDate.Add(timeSpan);
     }
@@ -37,36 +34,32 @@ class CheckList : Goal{
         return totalPoints;
     } 
 
-
     public override void DisplayGoal(){ 
         string mark = " ";
         if (_currentCount >= _totalCount){
             mark ="X";
         }
-        string dlMessage = $"Currently completed {_currentCount}/{_totalCount}";
-        if (CheckDeadline()){
-            dlMessage = $"Count {_currentCount}/{_totalCount} --Deadline Passed--";
+        string dlMessage = "";
+        if (_deadlineDays != 0){
+            if (CheckDeadlinePast()){
+                dlMessage = $"Count {_currentCount}/{_totalCount} --Deadline Passed--";
+            } 
+            else{
+                DateTime now = DateTime.Now.Date;
+                int daysRemaining = 1 + (_deadlineDate - now).Days;
+                dlMessage = $"Currently completed {_currentCount}/{_totalCount} -- Days remaining: {daysRemaining} --";
+            }
         }
         Console.WriteLine($"[{mark}] {_name} ({_description}) -- {dlMessage}");
     }
 
-    public override bool CheckDeadline(){
-        bool isPast = false;
-        if (_deadlineDays != 0){
-            DateTime now = DateTime.Now.Date;
-            isPast = _deadlineDate < now;
-        }
-        return isPast;
-    }
-
-
-    public override void ReminderMesssage(){
-        if ((_currentCount < _totalCount) && !CheckDeadline()){
+    public override void DisplayReminder(){
+        if ((_currentCount < _totalCount) && !CheckDeadlinePast()){
             DateTime now = DateTime.Now.Date;
             TimeSpan timeSpan = now - _createdDate;
             if ((_reminderFrequency != 0) && (timeSpan.Days != 0)){
-                int daysRemaining = (_deadlineDate - now).Days;
-                if (daysRemaining == 0){
+                int daysRemaining = 1 + (_deadlineDate - now).Days;
+                if (daysRemaining == 1){
                     Console.Write($"Last day to complete -- {_name} ({_description}) Count {_currentCount}/{_totalCount} --");
                 }
                 else if (timeSpan.Days % _reminderFrequency == 0) {
@@ -76,6 +69,15 @@ class CheckList : Goal{
         }
     }
 
+    public override bool CheckDeadlinePast(){
+        bool isPast = false;
+        if (_deadlineDays != 0){
+            DateTime now = DateTime.Now.Date;
+            isPast = _deadlineDate < now;
+        }
+        return isPast;
+    }
+    
     public override string SaveString(){ 
         return $"{base.SaveString()}~{_deadlineDays}~{_bonusPoints}~{_totalCount}~{_currentCount}";
     } 

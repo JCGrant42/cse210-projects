@@ -25,33 +25,18 @@ class Goal{
 
     } 
 
-    public virtual bool CheckDeadline(){
+    public virtual void DisplayReminder(){
+
+    }
+
+    public virtual bool CheckDeadlinePast(){
         return true;
     }
 
     public virtual string SaveString(){ 
         return $"{_goalType}~{_name}~{_description}~{_points}~{_reminderFrequency}~{_createdDate}";
     } 
-    
-    public virtual bool IsComplete(){ 
-        return false;
-    } 
 
-    public void DisplayReminder(){
-        if (!IsComplete()){
-            if (!CheckDeadline()){
-                DateTime now = DateTime.Now.Date;
-                TimeSpan timeSpan = now - _createdDate;
-                if ((_reminderFrequency != 0) && (timeSpan.Days != 0) && (timeSpan.Days % _reminderFrequency == 0)){
-                    ReminderMesssage();
-                }
-            }
-        }
-    }
-
-    public virtual void ReminderMesssage(){
-        
-    }
 }
     
     

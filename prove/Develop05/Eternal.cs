@@ -13,8 +13,8 @@ class Eternal : Goal{
         Console.WriteLine($"{_name} ({_description}) -- Ongoing");
     } 
 
-    public override void ReminderMesssage(){
-        if (!CheckDeadline()){
+    public override void DisplayReminder(){
+        if (!CheckDeadlinePast()){
             DateTime now = DateTime.Now.Date;
             TimeSpan timeSpan = now - _createdDate;
             if ((_reminderFrequency != 0) && (timeSpan.Days != 0) && (timeSpan.Days % _reminderFrequency == 0)){

@@ -120,7 +120,7 @@ class GoalControls{
         int userChoice = GetValiudNumber("Which Goal did you acomplish: ");
         if (userChoice > 0 && userChoice <= _goalsList.Count ){
             Goal chosenGoal = _goalsList[userChoice - 1];
-            if (!chosenGoal.CheckDeadline()){
+            if (!chosenGoal.CheckDeadlinePast()){
                 _totalPoints += chosenGoal.RecordEvent();
             }
             else {
