@@ -1,264 +1,183 @@
 class Player : Entity {
 
-    private List<Card> _cards = new List<Card>();
-    private List<Card> _nobles = new List<Card>();
-    private Tile _reservedCard = new Tile();
-    private bool _hasReserved = false;
-    private Gems _tokens = new Gems(0,0,0,0,0,0);
-    private Gems _cardsGemDiscount = new Gems(0,0,0,0,0,0);
-    private PlayingField _field;
+    List<List<Tile>> _allCards = new List<List<Tile>>();
+    private Gems _cardDiscounts = new Gems(0,0,0,0,0,0);
+    private Tier _reservedCards = new Tier();
+    private List<Tile> _nobles = new List<Tile>();
     private string _playerName; 
+    private int _points;
+    private bool _isTurn;
+    private PlayingField _field;
+    private List<Options> _options;
+    private List<Player> _otherPlayers;
 
-
-    public Player(PlayingField field, string playerName) : base("Player"){
+    public Player(PlayingField field, List<Options> options, List<Player> otherPlayers, string playerName) : base(0){
         _playerName = playerName;
         _field = field;
-    }
+        _options = options;
+        _otherPlayers = otherPlayers;
 
-    public string GetPlayerName(){
-        return _playerName;
+        for (int i = 0; i < 5; i++){
+            _allCards.Add(new List<Tile>());
+        }
     }
-
-    public void Display(){
-    }
-   
 
     public void DoPlayerTurn(){
-        //_field.Display();
-        bool doTurn = true;
-        while (doTurn){
-            Console.WriteLine("\n1. Take two of one Gem \n2. Take three unique Gems \n3. Purchase Card \n4. Reserve Card");
-            Console.Write("Enter Option (1-6): ");
+        Console.WriteLine("\n\n\n\n\n\n");
+        _isTurn = true;
+        while (_isTurn){
+            //Console.Clear();
+            _field.Display();
+            Console.Write($"\n\n{_playerName}'s turn: ");
+            DisplayPlayer();
+            Console.WriteLine("\n1. Purchase Card \n2. Take two of one Gem \n3. Take three unique Gems \n4. Reserve Card \n5. Display Other Players");
+            Console.Write("Enter Option (1-4): ");
             string userinput = Console.ReadLine();
-            Console.WriteLine();
+            Console.WriteLine("\n");
             switch (userinput)
             {   
             case "1":
-                TakeTokens(2);
-                //check players current amoutn of gems, if it will make it higher than 10 warn the player
-                //let player choose which gem type to take
-                //checks bank's amount of gems
-                //remove from bank
-                //add to player
-                //check if player has more than ten and then gives choose on which to remove.
+                _options[0].DoAction(this);
                 break;
             case "2":
-                //same as aabove but lets the player choose three times 
-                //after wards lets them comfirm their choice before setting it
+                _options[1].DoAction(this);
                 break;
             case "3":
-                //lets player select the tier and go back, give option to purchase reserved card
-                //lets the player select the card and go back
-                    //returns the card after selection
-                // checks the cost to the players resources 
-                    //inputs the card, the players tokens, and the land card info to function 
-                    //adds the cards and tokens together
-                    //compare the info
-                    //if true the takes the card cost and subtract the discounts from the price
-                    //take the remained and returns the cost amounts
-                    //use the amount and subtract it from player tokens
-                    //adds card to player
-                    //add token to discount gems
-                //check if the player has earn any of the nobles
-                    //input playing field and uses land cards
-                    // iterates through list of nobles on playing field
-                    //if palyer has equal or greater than on all requirements, 
-                    //return the noble and display message.
+                _options[2].DoAction(this);
                 break;
             case "4":
-                //use same process as purchasing but does not require the checks
-                // adds the card to the reserved card
-                // program acknowlegdes there is a reserved card
-                //checks if there is a gold token
-                // if there is
-                    //remove from bank
-                    //add to player 
+                _options[3].DoAction(this);
+                break;
+            case "5":
+                DisplayOtherPlayers();
                 break;
             default: 
                 Console.WriteLine("Invalid input.");
                 break;
             }
         }
-    }
-    private void TakeTokens(int tokenAmount){
-        bool proceed = true;
-        bool isOverTen = false;
-        if (CheckTotalTokenAmount(tokenAmount)){
-            isOverTen = true;
-            proceed = GetUserComfirmation("This will put you over ten tokens, you will have to discard tokens until you are back down to ten. \nDo you wish to proceed (Y/N): ");
-        }
-        if (proceed){
-            if (tokenAmount == 2){
-                TakeTwoTokens();
-            }
-            if (tokenAmount == 3){
-                TakeThreeTokens();
-            }
-            if (isOverTen){
-               // DiscardTokens();
-            }
-        }
+        CheckNobles();
+        Console.WriteLine("\n_____________________________________________________________________________________\n");
+        DisplayPlayer();
+        Console.WriteLine("\n\nEnding turn...\n");
+        Console.WriteLine("Press enter to continue");
+        Console.ReadLine();
     }
 
-    private void TakeTwoTokens(){
-        string choose = TokenSelection();
-        if (GetUserComfirmation($"Are you sure you want to take 2 {choose}?")){
-            TransferTokens();
-        }
+    
+
+    public bool endTurn(){
+        return _isTurn = false;;
     }
 
-    private void TakeThreeTokens(){
-        string choose1 = TokenSelection();
-        string choose2 = TokenSelection();
-        string choose3 = TokenSelection();
-        if (GetUserComfirmation($"Are you sure you want to take 1 {choose1}, 1 {choose2}, and 1 {choose3}?")){
-            TransferTokens();
-        }
+    public string GetPlayerName(){
+        return _playerName;
     }
 
-    private string TokenSelection(){
-        bool active = true;
-       // string chosenToken ;
-        while (active){
-            Console.WriteLine("Which gem do you want to take?");
-            Console.WriteLine("\n1. Diamond \n2. Sapphire \n3. Emerald \n4. Ruby \n5. Onyx");
-            Console.Write("Enter Option (1-5): ");
-            string userChoose = Console.ReadLine();
-            switch (userChoose) {
-                case "1":
-                    break;
-                case "2":
-                    break;
-                case "3": 
-                    break;
-                case "4":
-                    break;
-                case "5":
-                    break;
-                default: 
-                    Console.WriteLine("Invalid input.");
-                    break;
-            }
-        }
-        return "";
+    public Tier GetReservedCards(){
+        return _reservedCards;
     }
-
-    public void TransferTokens(){
-
+    
+    public Gems GetCardDiscounts(){
+        return _cardDiscounts;
     }
-
-    private bool CheckTotalTokenAmount(int extraAmount = 0){
-        bool isOverTen = false;
-        int amount = 0;
-        for (int i = 0; i < 6; i++){
-            amount += _tokens.GetGemAmountByIndex(i);   
-        }
-        if (amount > 10) {
-            isOverTen = true;
-        }
-        return isOverTen;
-    }
-
-    public (bool, Tile, Tier) ChooseCard(){
-        bool doChoose = true;
-        bool didChoose = false;
-        Tile ChosenCard = new Tile();
-        Tier chosenTier = new Tier();
-
-        while (doChoose){
-            Console.WriteLine("Which Teir would you like to choose from?");
-            Console.WriteLine("\n1. Bottom Tier \n2. Middle Tier \n3. High Tier \n4. Go Back ");
-            Console.Write("Enter Option (1-4): ");
-            string userInputTier = Console.ReadLine();
-            int.TryParse(userInputTier, out int userTierNum);
-            if (userTierNum >= 1 || userTierNum <= 3) {
-                chosenTier = _field.GetTier(userTierNum);
-
-                while (doChoose){
-                    chosenTier.DisplayTier();
-                    Console.WriteLine("     1          2          3          4       5. Go Back");
-                    Console.WriteLine("Which card would you like to choose? ");
-                    Console.Write("Enter (1-5): ");
-                    string userInputCard = Console.ReadLine();
-                    int.TryParse(userInputCard, out int userCardNum);
-                    if (userCardNum >= 1 || userCardNum <= 4) {
-                        ChosenCard = chosenTier.GetCard(userCardNum - 1);
-                        didChoose = true;
-                    }
-                    else if (userCardNum == 5) {
-                        doChoose = false;
-                    }
-                    else{
-                        Console.WriteLine("Invald Choose.");
-                    }
-                }
-            }
-            else if (userTierNum == 4) {
-                doChoose = false;
-            }
-            else{
-                Console.WriteLine("Invald Choose.");
-            }
-        }
-        return (didChoose, ChosenCard, chosenTier);
-
-    }
-
-
-    public void PurchaseCard(){
-        (bool didChoose, Tile choosenCard, Tier choosenTier) = ChooseCard();
-        if (didChoose){
-            Gems newPrice = CalculateDiscount(choosenCard);
-            if (CheckPlayerResources()){
-                //choosenTier.TakeCard();
-                TransferTokens();
-            }
-        }
-    }
-    public void ReservedCard(){
-        (bool didChoose, Tile choosenCard, Tier choosenTier) = ChooseCard();
-        if (didChoose){
-            _reservedCard = choosenCard;
-            _hasReserved = true;
-            TransferTokens();
-        }
-    }
-
-    public Gems CalculateDiscount(Tile card){
-        Gems discountPrice = new Gems();
-        return discountPrice;
-    }
-
-    public bool CheckPlayerResources(){
-        return false;
-    }
-
-    private bool GetUserComfirmation(string message){
-            bool userAnswer = false;
-            Console.Write($"{message}");
-            string userInput = Console.ReadLine();
-            if (userInput == "y" || userInput == "Y" || userInput == "yes" || userInput == "Yes"){
-                userAnswer = true;
-            }
-            else{
-                Console.WriteLine("Going back.");
-            }
-        return userAnswer;
-    }
-
+      
     public bool CheckScore(){
-        int totalPoints = 0;
         bool hasWon = false;
-        foreach (Card n in _nobles){
-            totalPoints += n.GetPoints();
-        }
-        foreach (Card c in _cards){
-            totalPoints += c.GetPoints();
-        }
-        if (totalPoints >= 15){
+        if (_points >= 15){
             hasWon = true;
         }
         return hasWon;
     }
+
+    public void AddCard(Tile card){
+        int index = card.GetCardTypeIndex();
+        _allCards[index].Add(card);
+        _cardDiscounts.ChangeAmount(card.GetCardTypeIndex(), 1);
+        _points += card.GetPoints();
+    }
+
+    private void CheckNobles(){
+        List<Tile> nobles = _field.GetTier(0).GetShownCards();
+        foreach (Tile nobleTile in nobles){
+            if (CheckPlayerResources(_cardDiscounts, nobleTile.GetGems())){
+                _nobles.Add(nobleTile);
+                _points += 3;
+                nobleTile.DisplayCard("\nYou have gained a Noble: ");
+                Console.WriteLine();
+            }
+        }
+        foreach(Tile noble in _nobles){
+            nobles.Remove(noble);
+        }
+    }
+
+    public bool CheckPlayerResources(Gems playerResources, Gems resourcesNeeded){
+        bool hasEnough = true;
+        for(int i = 0; i < 5; i++){ 
+            if (!playerResources.CheckIfEnough(i, resourcesNeeded.GetAmount(i))){
+                hasEnough = false;
+                break;
+            }
+        }
+        return hasEnough;
+    }
+    public void DisplayOtherPlayers(){
+        foreach (Player p in _otherPlayers){
+            if (p != this){
+                Console.WriteLine("\n____________________________________________________________________________\n");
+                Console.Write($"{p.GetPlayerName()}: ");
+                p.DisplayPlayer();
+            }
+        }
+        Console.WriteLine("Press enter to continue");
+        Console.ReadLine();
+    }
+    private void DisplayPlayer(){
+        Console.Write($"{_points} points");
+        DisplayNobles();
+        DisplayGems("\nTokens: \n");
+        DisplayCards();
+        Console.WriteLine();
+        if (_reservedCards.GetCount() > 0){
+            Console.WriteLine("\nReserved Cards: ");
+            _reservedCards.DisplayTier();
+        }
+    }
+
+    private void DisplayCards(){
+        Console.WriteLine("\nCards: ");
+        int highestCount = 0;
+        foreach (List<Tile> list in _allCards){
+            if (list.Count > highestCount){
+                highestCount = list.Count;
+            }
+        }
+        for (int i = 0; i < highestCount; i++){
+            for (int j = 0; j < 5; j++){
+                if (_allCards[j].Count != 0){
+                    if (_allCards[j].Count > i){
+                        Tile card = _allCards[j][i];
+                        Console.Write(card.GetLine(2));
+                    }
+                    else{
+                        Console.Write($"            ");
+                    }
+                }
+            }
+            Console.WriteLine();
+        } 
+    }
+
+    private void DisplayNobles(){
+        if (_nobles.Count > 0){
+            for(int i = 1; i <= 7; i++){      
+                foreach(Tile t in _nobles){
+                    Console.Write(t.GetLine(i));
+                }
+                Console.WriteLine();
+            } 
+        }
+    }   
 
 }

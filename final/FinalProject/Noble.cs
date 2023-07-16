@@ -4,7 +4,7 @@ class Noble : Tile{
 
     }
 
-    public override (string, string, string, string, string, string, string) BuildTileLines(){
+    protected override (string, string, string, string, string, string, string) BuildTileLines(){
         string line1 = "";
         string line2 =  " ________  ";
         string line3 = $"| 3P     | ";
@@ -12,10 +12,15 @@ class Noble : Tile{
         string line5 = $"|   {GetGemCost(1)} | ";
         string line6 = $"|   {GetGemCost(0)} | ";
         string line7 =  "|________| ";
-        //string line7 =  "             ";
         return (line1, line2, line3, line4, line5, line6, line7);
     }
-
+//Example
+//  _________  
+// | 3P      | 
+// |    3 () |
+// |    3 <> | 
+// |    3 // | 
+// |_________| 
 }
 
 

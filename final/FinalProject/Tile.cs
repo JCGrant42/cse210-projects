@@ -1,7 +1,7 @@
 class Tile {
-    private int _points;
+    protected int _points;
     private Gems _gems;
-    private string _cardType;
+    protected int _cardTypeIndex;
     private List<string> _gemCosts = new List<string>();
     private string _line1;
     private string _line2;
@@ -15,33 +15,17 @@ class Tile {
     public Tile(int points, int diamond, int sapphire, int emerald, int ruby, int onyx, string cardType){
         _points = points;
         _gems = new Gems(diamond, sapphire, emerald, ruby, onyx, 0);
-        _cardType = cardType;
-
-        CreateGemCost(diamond, "diamond");
-        CreateGemCost(sapphire, "sapphire");
-        CreateGemCost(emerald, "emerald");
-        CreateGemCost(ruby, "ruby");
-        CreateGemCost(onyx, "onyx");
+        _cardTypeIndex = _gems.GetIndexByName(cardType);
+        CreateLine(onyx, 4);
+        CreateLine(ruby, 3);
+        CreateLine(emerald, 2);
+        CreateLine(sapphire, 1);
+        CreateLine(diamond, 0);
 
         (_line1, _line2, _line3, _line4, _line5, _line6, _line7) = BuildTileLines();
     }
-    public int GetPoints(){
-        return _points;
-    }
-    public string GetCardType(){
-        return _cardType;
-    }
-    public virtual (string, string, string, string, string, string, string) BuildTileLines(){
-        return ("", "", "", "", "", "", "");
-    }
-
-    public void CreateGemCost(int cost, string gem){
-        if (cost != 0){
-            _gemCosts.Add($"{cost} {_gems.GetSymbol(gem)}");
-        } 
-    }
- 
-    public string GetGemCost(int index){
+    
+    protected string GetGemCost(int index){
         string gemCost = "    ";
         if (_gemCosts.Count > index){
             gemCost = _gemCosts[index];
@@ -49,7 +33,39 @@ class Tile {
         return gemCost;
     }
 
-    public string Getline(int lineNum){
+    protected void CreateLine(int cost, int index){
+        if (cost != 0){
+            _gemCosts.Add($"{cost} {_gems.GetSymbol(index)}");
+        } 
+    }
+
+    protected virtual (string, string, string, string, string, string, string) BuildTileLines(){
+        return ("", "", "", "", "", "", "");
+    }
+    
+
+    public void DisplayCard(string message){
+        Console.WriteLine(message);
+        for (int i = 1; i <= 7; i++){
+            Console.WriteLine(GetLine(i));
+        }
+        Thread.Sleep(1000);
+    }
+
+
+    public Gems GetGems(){
+        return _gems;
+    }
+
+    public int GetCardTypeIndex(){
+        return _cardTypeIndex;
+    }
+
+    public int GetPoints(){
+        return _points;
+    }
+
+    public string GetLine(int lineNum){
         string line = "";
         switch (lineNum){
         case 1:
@@ -76,4 +92,5 @@ class Tile {
         }
         return line;
     }
+
 }

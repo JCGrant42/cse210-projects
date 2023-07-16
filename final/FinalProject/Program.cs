@@ -4,47 +4,56 @@ class Program
 {
     static void Main(string[] args)
     {
-        bool doGame = true;
-
-        int numberOfPlayers = 3;
-        int winner = 0;
-
-
-        PlayingField field = new PlayingField(numberOfPlayers);
-        List<Player> players = new List<Player>();
-        string playerName = "";
-
-        for (int i = 0; i < numberOfPlayers; i++){
-            Player player = new Player(field, playerName);
-            players.Add(player);
+        
+        //get the amount of players
+        int numberOfPlayers = 1;
+        bool loop = true;
+        while(loop){
+            Console.Write($"How many people are playing? 1-4: ");
+            string userInput = Console.ReadLine();
+            int.TryParse(userInput, out int userNum);
+            if (userNum >= 1 && userNum <= 4) {
+                loop = false;
+                numberOfPlayers = userNum;
+            }
+            else{
+                Console.WriteLine("Invald Choose.");
+            }
         }
 
+        //Sets up the games, Playing feild creates the several decks that the game will be using
+        PlayingField field = new PlayingField(numberOfPlayers);
+        List<Options> options = new List<Options>();
+        options.Add(new PurchaseCard(field));
+        options.Add(new TakeTwoTokens(field));
+        options.Add(new TakeThreeTokens(field));
+        options.Add(new ReserveCard(field)); 
 
+        //Assigns the players and gets the player names
+        List<Player> players = new List<Player>();
+        for (int i = 1; i <= numberOfPlayers; i++){
+            Console.Write($"Player {i} enter your name: ");
+            string playerName = Console.ReadLine();
+            Console.WriteLine();
+            Player player = new Player(field, options, players, playerName);
+            players.Add(player);
+        }
+        
+        //Runs the game until a player gets 15 points then loop ends
+        int winner = 0;
+        bool doGame = true;
         while (doGame) {
             for (int i = 0; i < numberOfPlayers; i++){
-                DisplayGame(i);
                 players[i].DoPlayerTurn();
                 if (players[i].CheckScore()){
-                    doGame = true;
+                    doGame = false;
                     winner = i;
                     break;
                 }
             }
         }
-        Console.WriteLine($"Congratulations! {players[winner].GetPlayerName()} wins the game!");
-
-
-
-        void DisplayGame(int playerNum){
-            field.Display();
-            // for (int i = 0; i <= numberOfPlayers; i++){
-            //     if (i != playerNum){
-            //         players[i].Display();
-            //     }
-            // }
-            //Console.WriteLine($"{game[playerNum].GetPlayerName()}'s Turn!");
-            //game[playerNum].Display(); //Make sure the players reserved card is showing
-        }   
+        Console.WriteLine($"Congratulations! {players[winner].GetPlayerName()} has won the game!");
+        Console.WriteLine("\n\n\n\n\n\n");
     }
 
 }
